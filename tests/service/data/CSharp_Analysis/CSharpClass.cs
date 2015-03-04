@@ -8,7 +8,6 @@ namespace FSharp.Compiler.Service.Tests
 {
     public abstract class EmptyConfiguration : System.Data.Entity.DbConfiguration { }
 
-
     /// <summary>
     /// Documentation
     /// </summary>
