@@ -379,6 +379,10 @@ and FSharpEntity(cenv:cenv, entity:EntityRef) =
              yield FSharpType(cenv,  ty) ]
         |> makeReadOnlyCollection
 
+    member x.AsFSharpType =
+        checkIsResolved()
+        FSharpType(cenv, (generalizedTyconRef entity))
+
     member x.BaseType = 
         checkIsResolved()        
         GetSuperTypeOfType cenv.g cenv.amap range0 (generalizedTyconRef entity) 
