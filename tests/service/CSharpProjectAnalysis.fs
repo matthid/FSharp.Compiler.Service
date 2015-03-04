@@ -89,3 +89,16 @@ let ``Test that csharp references are recognized as such`` () =
         ()
     | None -> 
         Assert.Fail ("CSharpClass was not found in CSharp_Analysis assembly!")
+
+    match ass.Contents.Entities |> Seq.tryFind (fun e -> e.DisplayName = "EmptyConfiguration") with
+    | Some found ->
+        // this is no F# thing
+        found.IsFSharp |> shouldEqual false
+
+        // Check that we have members
+        match found.BaseType with
+        | Some _ -> ()
+        | None ->
+            Assert.Fail ("BaseType of EmptyConfiguration was not found!")
+    | None ->
+        Assert.Fail ("CSharpClass was not found in CSharp_Analysis assembly!")
