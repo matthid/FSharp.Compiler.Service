@@ -58,13 +58,19 @@ let getProjectReferences (dllFiles, libDirs, otherFlags) =
         |> dict
 
 [<Test>]
-let ``Test that csharp references are recognized as such`` () = 
+let ``Test that the csharp project works.`` () = 
     let csharpAssembly = typeof<CSharpClass>.Assembly.Location
     let dir = Path.GetDirectoryName csharpAssembly
     let entityFramework = Path.Combine(dir, "EntityFramework.dll")
     let table = getProjectReferences([csharpAssembly;entityFramework], Some [dir], None)
     let ass = table.["CSharp_Analysis"]
-
+    let rec getMembers (typ:FSharpEntity) = seq {
+        yield! typ.MembersFunctionsAndValues
+        match typ.BaseType with
+        | Some baseType ->
+            yield! getMembers baseType.TypeDefinition
+        | None -> ()
+      }
     match ass.Contents.Entities |> Seq.tryFind (fun e -> e.DisplayName = "CSharpClass") with
     | Some found ->
         // this is no F# thing
@@ -92,16 +98,5 @@ let ``Test that csharp references are recognized as such`` () =
         ()
     | None -> 
         Assert.Fail ("CSharpClass was not found in CSharp_Analysis assembly!")
-
-    match ass.Contents.Entities |> Seq.tryFind (fun e -> e.DisplayName = "EmptyConfiguration") with
-    | Some found ->
-        // this is no F# thing
-        found.IsFSharp |> shouldEqual false
-
-        // Check that we have members
-        match found.BaseType with
-        | Some _ -> ()
-        | None ->
-            Assert.Fail ("BaseType of EmptyConfiguration was not found!")
-    | None ->
-        Assert.Fail ("CSharpClass was not found in CSharp_Analysis assembly!")
+        
+    ass.Contents.Entities |> Seq.collect getMembers |> Seq.toList |> ignore

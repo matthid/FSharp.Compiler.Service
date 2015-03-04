@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace FSharp.Compiler.Service.Tests
 {
     public abstract class EmptyConfiguration : System.Data.Entity.DbConfiguration { }
+    public abstract class EmptyContext : System.Data.Entity.DbContext { }
 
     /// <summary>
     /// Documentation
