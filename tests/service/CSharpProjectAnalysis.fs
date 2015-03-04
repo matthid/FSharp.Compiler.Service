@@ -60,7 +60,9 @@ let getProjectReferences (dllFiles, libDirs, otherFlags) =
 [<Test>]
 let ``Test that csharp references are recognized as such`` () = 
     let csharpAssembly = typeof<CSharpClass>.Assembly.Location
-    let table = getProjectReferences([csharpAssembly], None, None)
+    let dir = Path.GetDirectoryName csharpAssembly
+    let entityFramework = Path.Combine(dir, "EntityFramework.dll")
+    let table = getProjectReferences([csharpAssembly;entityFramework], Some [dir], None)
     let ass = table.["CSharp_Analysis"]
     match ass.Contents.Entities |> Seq.tryFind (fun e -> e.DisplayName = "CSharpClass") with
     | Some found ->
