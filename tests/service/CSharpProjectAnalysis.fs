@@ -64,6 +64,7 @@ let ``Test that csharp references are recognized as such`` () =
     let entityFramework = Path.Combine(dir, "EntityFramework.dll")
     let table = getProjectReferences([csharpAssembly;entityFramework], Some [dir], None)
     let ass = table.["CSharp_Analysis"]
+
     match ass.Contents.Entities |> Seq.tryFind (fun e -> e.DisplayName = "CSharpClass") with
     | Some found ->
         // this is no F# thing
