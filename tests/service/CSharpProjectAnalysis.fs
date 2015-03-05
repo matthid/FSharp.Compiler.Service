@@ -62,7 +62,7 @@ let ``Test that the csharp project works.`` () =
     let csharpAssembly = typeof<CSharpClass>.Assembly.Location
     let dir = Path.GetDirectoryName csharpAssembly
     let entityFramework = Path.Combine(dir, "EntityFramework.dll")
-    let table = getProjectReferences([csharpAssembly;entityFramework], Some [dir], None)
+    let table = getProjectReferences([csharpAssembly], Some [dir], None)
     let ass = table.["CSharp_Analysis"]
     let rec getMembers (typ:FSharpEntity) = seq {
         yield! typ.MembersFunctionsAndValues
