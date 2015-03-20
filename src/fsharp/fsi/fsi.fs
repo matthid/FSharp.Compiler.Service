@@ -2439,13 +2439,15 @@ type FsiEvaluationSession (fsiConfig: FsiEvaluationSessionHostConfig, argv:strin
             let tcConfig = tcConfigP.Get()
             IncrementalFSharpBuild.GetFrameworkTcImports tcConfig
         with e -> 
-            stopProcessingRecovery e range0; failwithf "Error creating evaluation session: %A" e
+            stopProcessingRecovery e range0
+            raise <| new Exception(sprintf "Error creating evaluation session: %A" e, e)
 
     let tcImports =  
       try 
           TcImports.BuildNonFrameworkTcImports(None, tcConfigP,tcGlobals,frameworkTcImports,nonFrameworkResolutions,unresolvedReferences)
       with e -> 
-          stopProcessingRecovery e range0; failwithf "Error creating evaluation session: %A" e
+          stopProcessingRecovery e range0
+          raise <| new Exception(sprintf "Error creating evaluation session: %A" e, e)
 
     let ilGlobals  = tcGlobals.ilg
 
