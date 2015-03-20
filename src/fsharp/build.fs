@@ -4370,7 +4370,7 @@ type TcImports(tcConfigP:TcConfigProvider, initialResolutions:TcAssemblyResoluti
                     else 
                       try
                         tcImports.PrepareToImportReferencedFSharpDll tpApprovals m filename displayPSTypeProviderSecurityDialogBlockingUI dllinfo
-                      with e -> error(Error(FSComp.SR.buildErrorOpeningBinaryFile(filename, e.Message),m))
+                      with e -> error(Error(FSComp.SR.buildErrorOpeningBinaryFile(filename, e.Message),m) |> addInner e)
                 else 
                     tcImports.PrepareToImportReferencedIlDll tpApprovals m filename displayPSTypeProviderSecurityDialogBlockingUI dllinfo
             dllinfo,phase2
@@ -4389,7 +4389,9 @@ type TcImports(tcConfigP:TcConfigProvider, initialResolutions:TcAssemblyResoluti
                         try
                             Some(tcImports.RegisterAndPrepareToImportReferencedDll tpApprovals displayPSTypeProviderSecurityDialogBlockingUI nm)
                         with e ->
-                            errorR(Error(FSComp.SR.buildProblemReadingAssembly(nm.fusionName, e.Message),nm.originalReference.Range))
+                            errorR(
+                              Error(FSComp.SR.buildProblemReadingAssembly(nm.fusionName, e.Message),nm.originalReference.Range)
+                              |> addInner e)
                             None)
                |> List.unzip
         let ccuinfos = (List.collect (fun phase2 -> phase2()) phase2s) 

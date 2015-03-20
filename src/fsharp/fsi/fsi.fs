@@ -479,7 +479,7 @@ type internal ErrorLoggerThatStopsOnFirstError(tcConfigB:TcConfigBuilder, fsiStd
         errors <- errors + 1
         if tcConfigB.abortOnError then exit 1 (* non-zero exit code *)
         // STOP ON FIRST ERROR (AVOIDS PARSER ERROR RECOVERY)
-        raise (StopProcessing (sprintf "%A" err))
+        raise (StopProcessing (sprintf "%A" err) |> addInner err.Exception)
     
     member x.CheckForErrors() = (errors > 0)
     member x.ResetErrorCount() = (errors <- 0)
@@ -2440,14 +2440,14 @@ type FsiEvaluationSession (fsiConfig: FsiEvaluationSessionHostConfig, argv:strin
             IncrementalFSharpBuild.GetFrameworkTcImports tcConfig
         with e -> 
             stopProcessingRecovery e range0
-            raise <| new Exception(sprintf "Error creating evaluation session: %A" e, e)
+            raise <| new System.Exception(sprintf "Error creating evaluation session: %A" e, e)
 
     let tcImports =  
       try 
           TcImports.BuildNonFrameworkTcImports(None, tcConfigP,tcGlobals,frameworkTcImports,nonFrameworkResolutions,unresolvedReferences)
       with e -> 
           stopProcessingRecovery e range0
-          raise <| new Exception(sprintf "Error creating evaluation session: %A" e, e)
+          raise <| new System.Exception(sprintf "Error creating evaluation session: %A" e, e)
 
     let ilGlobals  = tcGlobals.ilg
 

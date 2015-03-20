@@ -393,7 +393,25 @@ let warnSink pe = CompileThreadStatic.ErrorLogger.WarnSink pe
 let errorRecovery exn m = CompileThreadStatic.ErrorLogger.ErrorRecovery exn m
 let stopProcessingRecovery exn m = CompileThreadStatic.ErrorLogger.StopProcessingRecovery exn m
 let errorRecoveryNoRange exn = CompileThreadStatic.ErrorLogger.ErrorRecoveryNoRange exn
-
+// Officially supported way to detect if we are running on Mono.
+// See http://www.mono-project.com/FAQ:_Technical
+// "How can I detect if am running in Mono?" section
+let private runningOnMono = 
+    try
+        System.Type.GetType("Mono.Runtime") <> null
+    with e-> 
+        // Must be robust in the case that someone else has installed a handler into System.AppDomain.OnTypeResolveEvent
+        // that is not reliable.
+        // This is related to bug 5506--the issue is actually a bug in VSTypeResolutionService.EnsurePopulated which is  
+        // called by OnTypeResolveEvent. The function throws a NullReferenceException. I'm working with that team to get 
+        // their issue fixed but we need to be robust here anyway.
+        false  
+let addInner (inner:exn) (exn:exn) = 
+  let field_name = if runningOnMono then "inner_exception" else "_innerException"
+  typeof<System.Exception>
+    .GetField(field_name, System.Reflection.BindingFlags.NonPublic ||| System.Reflection.BindingFlags.Instance)
+    .SetValue(exn, inner);
+  exn
 
 let report f = 
     f() 
