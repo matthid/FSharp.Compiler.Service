@@ -86,7 +86,10 @@ Target "Build" (fun _ ->
     |> List.iter (fun framework -> 
         let outputPath = "bin/" + framework
         !! (project + ".sln")
-        |> MSBuild outputPath "Clean,Build" ["Configuration","Release"; "TargetFrameworkVersion", framework]
+        |> MSBuild outputPath "Clean" ["Configuration","Release"; "TargetFrameworkVersion", framework]
+        |> ignore
+        !! (project + ".sln")
+        |> MSBuild outputPath "Build" ["Configuration","Release"; "TargetFrameworkVersion", framework]
         |> Log (".NET " + framework + " Build-Output: "))
 )
 
