@@ -89,3 +89,17 @@ let ``Test that csharp references are recognized as such`` () =
         ()
     | None -> 
         Assert.Fail ("CSharpClass was not found in CSharp_Analysis assembly!")
+
+    
+    match ass.Contents.Entities |> Seq.tryFind (fun e -> e.DisplayName = "CustomEventClass") with
+    | Some found ->
+        // this is no F# thing
+        found.IsFSharp |> shouldEqual false
+       
+        let members = found.MembersFunctionsAndValues |> Seq.map (fun e -> e.CompiledName, e) |> dict 
+        members.ContainsKey "OnWorklistTextRequested" |> shouldEqual true
+        let ev = members.["OnWorklistTextRequested"]
+        ev.IsEvent |> should be True
+        obj.ReferenceEquals(ev.ReturnParameter, null) |> should be False
+    | None -> 
+        Assert.Fail ("CSharpClass was not found in CSharp_Analysis assembly!")

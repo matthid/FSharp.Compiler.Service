@@ -87,4 +87,17 @@ namespace FSharp.Compiler.Service.Tests
             remove { throw new NotImplementedException(); }
         }
     }
+
+    public class CustomEventClass
+    {
+        
+        /// <summary>
+        /// Event triggered when WorklistText is required
+        /// </summary>
+        [System.Runtime.InteropServices.ComVisible(false)]
+        public delegate void WorklistTextRequested(int medicalRecordId, string accessionNo,
+          int templateId, string specificationCode, string specificationText, string aeTitle);
+
+        public event WorklistTextRequested OnWorklistTextRequested;
+    }
 }
