@@ -86,8 +86,12 @@ let FSharpLightSyntaxFileSuffixes : string list = [ ".fs";".fsscript";".fsx";".f
 exception HashIncludeNotAllowedInNonScript of range
 exception HashReferenceNotAllowedInNonScript of range
 exception HashDirectiveNotAllowedInNonScript of range
-exception FileNameNotResolved of (*filename*) string * (*description of searched locations*) string * range
-exception AssemblyNotResolved of (*originalName*) string * range
+exception FileNameNotResolved of (*filename*) string * (*description of searched locations*) string * range with
+  override x.ToString() =
+    sprintf "FileNameNotResolved(%s, %s, %O): %s %s" x.Data0 x.Data1 x.Data2 x.Message x.StackTrace
+exception AssemblyNotResolved of (*originalName*) string * range with
+  override x.ToString() =
+    sprintf "AssemblyNotResolved(%s, %O): %s %s" x.Data0 x.Data1 x.Message x.StackTrace
 exception LoadedSourceNotFoundIgnoring of (*filename*) string * range
 exception MSBuildReferenceResolutionWarning of (*MSBuild warning code*)string * (*Message*)string * range
 exception MSBuildReferenceResolutionError of (*MSBuild warning code*)string * (*Message*)string * range

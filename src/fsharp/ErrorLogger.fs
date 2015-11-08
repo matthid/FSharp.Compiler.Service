@@ -221,16 +221,23 @@ type PhasedError = { Exception:exn; Phase:BuildPhase } with
 #endif            
         isPhaseInCompile
 
+let fcsLogging = System.Diagnostics.TraceSource("FSharp.Compiler.Service")
+
 [<AbstractClass>]
 [<System.Diagnostics.DebuggerDisplay("{DebugDisplay()}")>]
-type ErrorLogger(nameForDebugging:string) = 
+type ErrorLogger(nameForDebugging:string) =
+    let getErrorMessage (err:PhasedError) =
+        sprintf "Phase: %A, Error: %O" err.Phase err.Exception
+
     abstract ErrorCount: int
     // the purpose of the 'Impl' factoring is so that you can put a breakpoint on the non-Impl code just below, and get a breakpoint for all implementations of error loggers
     abstract WarnSinkImpl: PhasedError -> unit
     abstract ErrorSinkImpl: PhasedError -> unit
-    member this.WarnSink err = 
+    member this.WarnSink err =
+        fcsLogging.TraceEvent(System.Diagnostics.TraceEventType.Warning, 0, getErrorMessage err)
         this.WarnSinkImpl err
     member this.ErrorSink err =
+        fcsLogging.TraceEvent(System.Diagnostics.TraceEventType.Error, 0, getErrorMessage err)
         this.ErrorSinkImpl err
     member this.DebugDisplay() = sprintf "ErrorLogger(%s)" nameForDebugging
     // record the reported error/warning numbers for SQM purpose
