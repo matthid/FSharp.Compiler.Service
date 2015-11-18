@@ -1,0 +1,8 @@
+﻿Dummy1: test.data
+
+Dummy2: 12345
+
+Dummy3:
+  Dummy31: test.data
+  Dummy32: "test.data"
+  Dummy33: "test.data"

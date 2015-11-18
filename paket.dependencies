@@ -11,4 +11,7 @@ nuget FAKE
 nuget FSharp.Formatting
 nuget SourceLink.Fake
 
+# tests
+nuget FSharp.Configuration
+
 github fsharp/FAKE modules/Octokit/Octokit.fsx
