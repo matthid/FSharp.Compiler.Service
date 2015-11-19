@@ -1560,6 +1560,7 @@ module internal MagicAssemblyResolution =
 
         let handler = new ResolveEventHandler(fun _ args ->
             printfn "FSC Resolving: %s" args.Name
+            System.Diagnostics.Debugger.Break()
             ResolveAssembly (rangeStdin, tcConfigB, tcImports, fsiDynamicCompiler, fsiConsoleOutput, args.Name))
         
         AppDomain.CurrentDomain.add_AssemblyResolve(handler)
