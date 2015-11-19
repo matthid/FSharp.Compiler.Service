@@ -11,10 +11,10 @@ open Microsoft.FSharp.Compiler.AbstractIL.Internal.Library
 
 
 /// is this the developer-debug build? 
-let debug = false 
-let verbose = false
-let progress = ref false 
-let tracking = ref false // intended to be a general hook to control diagnostic output when tracking down bugs
+let debug = true 
+let verbose = true
+let progress = ref true 
+let tracking = ref true // intended to be a general hook to control diagnostic output when tracking down bugs
 
 let condition _s = 
 #if FX_NO_GET_ENVIRONMENT_VARIABLE

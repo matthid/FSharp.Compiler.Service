@@ -1558,7 +1558,8 @@ module internal MagicAssemblyResolution =
 
         let rangeStdin = rangeN Lexhelp.stdinMockFilename 0
 
-        let handler = new ResolveEventHandler(fun _ args -> 
+        let handler = new ResolveEventHandler(fun _ args ->
+            printfn "FSC Resolving: %s" args.Name
             ResolveAssembly (rangeStdin, tcConfigB, tcImports, fsiDynamicCompiler, fsiConsoleOutput, args.Name))
         
         AppDomain.CurrentDomain.add_AssemblyResolve(handler)
