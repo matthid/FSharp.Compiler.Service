@@ -313,6 +313,25 @@ let ``Disposing interactive session (collectible)``() =
         createSession i
 
 [<Test>]
+let ``interactive can handle ifdefs``() =
+
+        let defaultArgs = [|"fsi.exe";"--noninteractive";"--nologo";"--gui-"; "--define:TEST"|]
+        let sbOut = StringBuilder()
+        use inStream = new StringReader("")
+        use outStream = new StringWriter(sbOut)
+        let sbErr = StringBuilder("")
+        use errStream = new StringWriter(sbErr)
+
+        let fsiConfig = FsiEvaluationSession.GetDefaultConfiguration()
+
+        use session = FsiEvaluationSession.Create(fsiConfig, defaultArgs, inStream, outStream, errStream, collectible=true)
+        session.EvalInteraction @"
+#if !TEST
+#load ""someMissingFile.fs""
+#r ""missing.dll""
+#endif"
+
+[<Test>]
 let ``interactive session events``() =
 
         let defaultArgs = [|"fsi.exe";"--noninteractive";"--nologo";"--gui-"|]
