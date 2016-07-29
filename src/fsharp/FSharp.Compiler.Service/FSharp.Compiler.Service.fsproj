@@ -49,12 +49,12 @@
     <DefineConstants>$(DefineConstants);NO_STRONG_NAMES</DefineConstants>
     <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(MSBuildProjectDirectory)\..\..\..\</SolutionDir>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
-    <FsLexYaccPath>..\..\..\lib\bootstrap\4.0</FsLexYaccPath>
-    <FsSrGenToolPath>..\..\..\packages\FsSrGen\lib\net46</FsSrGenToolPath>
+    <FsLexYaccPath>$(SolutionDir)lib\bootstrap\4.0</FsLexYaccPath>
+    <FsSrGenToolPath>$(SolutionDir)packages\FsSrGen\lib\net46</FsSrGenToolPath>
     <FsLexToolPath>$(FsLexYaccPath)</FsLexToolPath>
     <FsYaccToolPath>$(FsLexYaccPath)</FsYaccToolPath>
     <FsLexToolExe>fslex.exe</FsLexToolExe>
@@ -221,12 +221,6 @@
     </Compile>
     <Compile Include="..\rational.fs">
       <Link>Utilities/rational.fs</Link>
-    </Compile>
-    <Compile Include="..\TraceCall.fsi">
-      <Link>Utilities/TraceCall.fsi</Link>
-    </Compile>
-    <Compile Include="..\TraceCall.fs">
-      <Link>Utilities/TraceCall.fs</Link>
     </Compile>
     <Compile Include="..\range.fsi">
       <Link>ErrorLogging/range.fsi</Link>
@@ -641,11 +635,21 @@
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Engine" />
-    <Reference Include="Microsoft.Build" />
-    <Reference Include="Microsoft.Build.Utilities.v4.0" />
-    <Reference Include="Microsoft.Build.Tasks.v4.0" />
+    <Reference Include="Microsoft.Build.Framework, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Engine, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.v12.0">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Tasks.v12.0">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>False</Private>
     </Reference>
@@ -661,7 +665,7 @@
   <Target Name="AfterBuild" Condition="Exists('..\..\..\.paket\paket.exe')">
     <CopyRuntimeDependencies OutputPath="$(OutDir)" TargetFramework="$(TargetFrameworkIdentifier) - $(TargetFrameworkVersion)" ProjectsWithRuntimeLibs="System.Threading" />
   </Target>
-  <Import Project="$(SolutionDir)\packages\FSharp.SRGen.Build.Tasks.$(FsSrGenBuildTasksVersion)\content\FSharp.SRGen.targets" />
+  <Import Project="$(SolutionDir)\packages\FSharp.SRGen.Build.Tasks\content\FSharp.SRGen.targets" />
   <Import Project="$(FsLexYaccPath)\FsLexYacc.targets" />
   <Import Project="$(SolutionDir)\.paket\paket.targets" />
   <Choose>

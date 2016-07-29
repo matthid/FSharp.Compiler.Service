@@ -95,6 +95,7 @@ let ``Project file parsing VS2013_FSharp_Portable_Library_net45``() =
 [<Test>]
 let ``Project file parsing Sample_VS2013_FSharp_Portable_Library_net451_adjusted_to_profile78``() = 
     let projectFile = __SOURCE_DIRECTORY__ + @"/../projects/Sample_VS2013_FSharp_Portable_Library_net451_adjusted_to_profile78/Sample_VS2013_FSharp_Portable_Library_net451.fsproj"
+    Directory.SetCurrentDirectory(__SOURCE_DIRECTORY__ + @"/../projects/Sample_VS2013_FSharp_Portable_Library_net451_adjusted_to_profile78/")
     let options = ProjectCracker.GetProjectOptionsFromProjectFile(projectFile, [])
 
     checkOption options.OtherOptions "--targetprofile:netcore"
@@ -207,7 +208,7 @@ let ``Project file parsing -- Logging``() =
     Assert.That(log, Is.StringContaining("Reference System.Core resolved"))
     Assert.That(log, Is.StringContaining("Using task ResolveAssemblyReference from Microsoft.Build.Tasks.ResolveAssemblyReference"))
   else
-    Assert.That(log, Is.StringContaining("""Using "ResolveAssemblyReference" task from assembly "Microsoft.Build.Tasks.v12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"."""))
+    Assert.That(log, Is.StringContaining("""Using "ResolveAssemblyReference" task from assembly "Microsoft.Build.Tasks.Core, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"."""))
 
 [<Test>]
 let ``Project file parsing -- Full path``() =
@@ -409,5 +410,32 @@ let ``Project file parsing -- space in file name``() =
   |> set
   |> should equal (set [ "Test2File1.fs"; "Test2File2.fs" ])
 
+[<Test>]
+let ``Project file parsing -- report files``() =
+  if not runningOnMono then
+   for f in Directory.EnumerateFiles(@"C:\Program Files (x86)\Reference Assemblies\Microsoft\FSharp\","*",SearchOption.AllDirectories) do 
+     printfn "File: %s" f
+   for f in Directory.EnumerateFiles(@"C:\Program Files (x86)\Microsoft SDKs\F#\4.0\","*",SearchOption.AllDirectories) do 
+     printfn "File: %s" f
+
+[<Test>]
+let ``Test ProjectFileNames order for GetProjectOptionsFromScript`` () = // See #594
+    let test scriptName expected =
+        let scriptPath = __SOURCE_DIRECTORY__ + @"/data/ScriptProject/" + scriptName + ".fsx"
+        let scriptSource = File.ReadAllText scriptPath
+        let projOpts =
+            checker.GetProjectOptionsFromScript(scriptPath, scriptSource)
+            |> Async.RunSynchronously
+        projOpts.ProjectFileNames
+        |> Array.map Path.GetFileNameWithoutExtension
+        |> (=) expected
+        |> shouldEqual true
+    test "Main1" [|"BaseLib1"; "Lib1"; "Lib2"; "Main1"|]
+    test "Main2" [|"BaseLib1"; "Lib1"; "Lib2"; "Lib3"; "Main2"|]
+    test "Main3" [|"Lib3"; "Lib4"; "Main3"|]
+    test "Main4" [|"BaseLib2"; "Lib5"; "BaseLib1"; "Lib1"; "Lib2"; "Main4"|]
+
 #endif
+
+
 
