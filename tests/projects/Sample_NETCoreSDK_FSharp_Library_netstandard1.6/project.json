@@ -10,7 +10,7 @@
     }
   },
   "dependencies": {
-    "Microsoft.FSharp.Core.netcore": "1.0.0-alpha-*"
+    "FSharp.Core": "4.0.1.7-alpha"
   },
   "frameworks": {
     "netstandard1.6": {
