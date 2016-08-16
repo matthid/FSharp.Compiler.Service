@@ -17,6 +17,7 @@
     <OutputPath>..\..\bin\$(TargetFrameworkVersion)\</OutputPath>
     <Tailcalls>true</Tailcalls>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
+    <ResolveNuGetPackages>false</ResolveNuGetPackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -96,6 +97,11 @@
     <ProjectReference Include="data\CSharp_Analysis\CSharp_Analysis.csproj">
       <Name>CSharp_Analysis</Name>
       <Project>{887630a3-4b1d-40ea-b8b3-2d842e9c40db}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="data\TestTP\TestTP.fsproj">
+      <Name>TestTP</Name>
+      <Project>{ff76bd3c-5e0a-4752-b6c3-044f6e15719b}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
