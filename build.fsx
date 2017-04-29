@@ -310,14 +310,14 @@ Target "All.NetFx" DoNothing
   ==> "AssemblyInfo"
   ==> "CodeGen.NetCore"
   ==> "Build.NetCore"
-  ==> "RunTests.NetCore"
+  //==> "RunTests.NetCore"
   ==> "All.NetCore"
 
 "Clean"
   =?> ("BuildVersion", isAppVeyorBuild)
   ==> "AssemblyInfo"
   ==> "Build.NetFx"
-  ==> "RunTests.NetFx"
+  //==> "RunTests.NetFx"
   ==> "All.NetFx"
 
 "All.NetFx"
